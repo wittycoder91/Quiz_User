@@ -1,0 +1,63 @@
+@font-face {
+  font-family: 'SweetJoys';
+  src: url('/public/fonts/sweet_joys/SweetJoys-Dot.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'RiskTaker';
+  src: url('/public/fonts/risk_taker/Risk Taker - Free Trial.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Postbook';
+  src: url('/public/fonts/postbook/Postbook.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'OpalOrbit';
+  src: url('/public/fonts/opal_orbit/OpalOrbit-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Howdybun';
+  src: url('/public/fonts/howdybun/Howdybun.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'KindDaily';
+  src: url('/public/fonts/kind_daily/Kind Daily.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SuperGreatly';
+  src: url('/public/fonts/super_greatly/Super Greatly.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'BeachBall';
+  src: url('/public/fonts/beach_ball_2/Beach-Ball.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+} 
