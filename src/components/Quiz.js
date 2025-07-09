@@ -1,15 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { apiService } from '../services/api';
-import { useSettings } from '../context/SettingsContext';
-import { FiCheckCircle, FiXCircle, FiRotateCcw, FiEye } from 'react-icons/fi';
-import LoadingScreen from './LoadingScreen';
-import '../../src/assets/css/local-fonts.css'
+import React, { useState, useEffect } from "react";
+import { apiService } from "../services/api";
+import { useSettings } from "../context/SettingsContext";
+import { FiCheckCircle, FiXCircle, FiRotateCcw, FiEye } from "react-icons/fi";
+import LoadingScreen from "./LoadingScreen";
+import "../../src/assets/css/local-fonts.css";
 
 const Quiz = () => {
-  const { logo, backgroundColor, textColor, fontFamily, isLoading: settingsLoading, error: settingsError } = useSettings();
+  const {
+    logo,
+    backgroundColor,
+    textColor,
+    fontFamily,
+    isLoading: settingsLoading,
+    error: settingsError,
+  } = useSettings();
   const [quizData, setQuizData] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [userAnswer, setUserAnswer] = useState('');
+  const [userAnswer, setUserAnswer] = useState("");
   const [isCorrect, setIsCorrect] = useState(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showFinalOptions, setShowFinalOptions] = useState(false);
@@ -25,13 +32,16 @@ const Quiz = () => {
   const loadQuiz = async () => {
     try {
       setIsLoading(true);
-      const data = await apiService.getActiveQuiz();
 
-      setQuizData(data);
+      const data = await apiService.getActiveQuiz();
+      if (data) {
+        setQuizData(data);
+      }
+
       setIsLoading(false);
     } catch (error) {
-      console.error('Error in loadQuiz:', error);
-      setError(error.message || 'Failed to load quiz. Please try again.');
+      console.error("Error in loadQuiz:", error);
+      setError(error.message || "Failed to load quiz. Please try again.");
       setIsLoading(false);
     }
   };
@@ -39,7 +49,8 @@ const Quiz = () => {
   const handleAnswerSubmit = () => {
     if (!userAnswer.trim()) return;
 
-    const isAnswerCorrect = userAnswer.trim().toLowerCase() === quizData.answer.toLowerCase();
+    const isAnswerCorrect =
+      userAnswer.trim().toLowerCase() === quizData.answer.toLowerCase();
     setIsCorrect(isAnswerCorrect);
 
     if (isAnswerCorrect) {
@@ -48,8 +59,8 @@ const Quiz = () => {
       // Move to next question or show final options
       if (currentQuestionIndex < quizData.questions.length - 1) {
         setTimeout(() => {
-          setCurrentQuestionIndex(prev => prev + 1);
-          setUserAnswer('');
+          setCurrentQuestionIndex((prev) => prev + 1);
+          setUserAnswer("");
           setIsCorrect(null);
         }, 1500);
       } else {
@@ -60,7 +71,7 @@ const Quiz = () => {
 
   const handleRetry = () => {
     setCurrentQuestionIndex(0);
-    setUserAnswer('');
+    setUserAnswer("");
     setIsCorrect(null);
     setShowFinalOptions(false);
   };
@@ -72,7 +83,7 @@ const Quiz = () => {
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       handleAnswerSubmit();
     }
   };
@@ -85,10 +96,15 @@ const Quiz = () => {
   // Show error if settings failed to load
   if (settingsError) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor }}>
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ backgroundColor }}
+      >
         <div className="text-center">
-          <p className="text-red-500 mb-4">Failed to load settings: {settingsError}</p>
-          <button 
+          <p className="text-red-500 mb-4">
+            Failed to load settings: {settingsError}
+          </p>
+          <button
             onClick={() => window.location.reload()}
             className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
           >
@@ -101,9 +117,15 @@ const Quiz = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor }}>
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ backgroundColor }}
+      >
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4" style={{ borderColor: textColor }}></div>
+          <div
+            className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4"
+            style={{ borderColor: textColor }}
+          ></div>
           <p style={{ color: textColor, fontFamily }}>Loading quiz...</p>
         </div>
       </div>
@@ -112,10 +134,13 @@ const Quiz = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor }}>
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ backgroundColor }}
+      >
         <div className="text-center">
           <p className="text-red-500 mb-4">{error}</p>
-          <button 
+          <button
             onClick={loadQuiz}
             className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
           >
@@ -128,9 +153,14 @@ const Quiz = () => {
 
   if (!quizData) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor }}>
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ backgroundColor }}
+      >
         <div className="text-center">
-          <p style={{ color: textColor, fontFamily }}>No active quiz available.</p>
+          <p style={{ color: textColor, fontFamily }}>
+            No active quiz available.
+          </p>
         </div>
       </div>
     );
@@ -139,14 +169,17 @@ const Quiz = () => {
   const currentQuestion = quizData.questions[currentQuestionIndex];
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor }}>
+    <div
+      className="min-h-screen flex items-center justify-center p-4"
+      style={{ backgroundColor }}
+    >
       <div className="max-w-2xl w-full">
         {/* Logo */}
         {logo && (
           <div className="text-center mb-8">
-            <img 
-              src={logo} 
-              alt="Logo" 
+            <img
+              src={logo}
+              alt="Logo"
               className="h-16 mx-auto object-contain"
             />
           </div>
@@ -156,7 +189,10 @@ const Quiz = () => {
         <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
           {/* Quiz Title */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold mb-2" style={{ color: textColor, fontFamily }}>
+            <h1
+              className="text-3xl font-bold mb-2"
+              style={{ color: textColor, fontFamily }}
+            >
               {quizData.title}
             </h1>
             <p style={{ color: textColor, fontFamily }}>
@@ -166,17 +202,23 @@ const Quiz = () => {
 
           {/* Question Counter */}
           <div className="text-center mb-6">
-            <span className="inline-block bg-blue-100 x-4 py-2 px-4 rounded-full text-sm font-medium" style={{ color: textColor, fontFamily }}>
+            <span
+              className="inline-block bg-blue-100 x-4 py-2 px-4 rounded-full text-sm font-medium"
+              style={{ color: textColor, fontFamily }}
+            >
               Question {currentQuestionIndex + 1} of {quizData.questions.length}
             </span>
           </div>
 
           {/* Current Question */}
           <div className="mb-8">
-            <h2 className="text-xl font-semibold mb-4" style={{color: textColor, fontFamily }}>
+            <h2
+              className="text-xl font-semibold mb-4"
+              style={{ color: textColor, fontFamily }}
+            >
               {currentQuestion.question}
             </h2>
-            
+
             {/* Answer Input */}
             <div className="mb-6">
               <input
@@ -204,9 +246,13 @@ const Quiz = () => {
 
           {/* Answer Feedback */}
           {isCorrect !== null && (
-            <div className={`text-center p-4 rounded-lg mb-4 ${
-              isCorrect ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-            }`}>
+            <div
+              className={`text-center p-4 rounded-lg mb-4 ${
+                isCorrect
+                  ? "bg-green-100 text-green-800"
+                  : "bg-red-100 text-red-800"
+              }`}
+            >
               <div className="flex items-center justify-center gap-2">
                 {isCorrect ? (
                   <>
@@ -227,7 +273,8 @@ const Quiz = () => {
           {showFinalOptions && (
             <div className="text-center">
               <p className="text-gray-600 mb-6" style={{ fontFamily }}>
-                You've answered all questions. Would you like to try again or see the answer?
+                You've answered all questions. Would you like to try again or
+                see the answer?
               </p>
               <div className="flex gap-4 justify-center">
                 <button
@@ -259,7 +306,10 @@ const Quiz = () => {
             <div className="text-green-500 mb-4">
               <FiCheckCircle className="text-6xl mx-auto" />
             </div>
-            <h3 className="text-2xl font-bold mb-4" style={{ color: textColor, fontFamily }}>
+            <h3
+              className="text-2xl font-bold mb-4"
+              style={{ color: textColor, fontFamily }}
+            >
               Congratulations!
             </h3>
             <p className="text-gray-600 mb-6" style={{ fontFamily }}>
@@ -282,4 +332,4 @@ const Quiz = () => {
   );
 };
 
-export default Quiz; 
+export default Quiz;
