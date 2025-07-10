@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { apiService } from "../services/api";
+import { apiService, UPLOAD_URL } from "../services/api";
 import { useSettings } from "../context/SettingsContext";
 import { FiCheckCircle, FiXCircle, FiRotateCcw, FiEye } from "react-icons/fi";
 import LoadingScreen from "./LoadingScreen";
@@ -13,6 +13,9 @@ const Quiz = () => {
     fontFamily,
     isLoading: settingsLoading,
     error: settingsError,
+    logoWidth,
+    logoHeight,
+    backgroundImage,
   } = useSettings();
   const [quizData, setQuizData] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -22,11 +25,15 @@ const Quiz = () => {
   const [showFinalOptions, setShowFinalOptions] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [bgImageUrl, setBgImageUrl] = useState(null);
 
   useEffect(() => {
     if (!settingsLoading) {
       loadQuiz();
+      fetchBackgroundImage();
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settingsLoading]);
 
   const loadQuiz = async () => {
@@ -43,6 +50,43 @@ const Quiz = () => {
       console.error("Error in loadQuiz:", error);
       setError(error.message || "Failed to load quiz. Please try again.");
       setIsLoading(false);
+    }
+  };
+
+  const fetchBackgroundImage = async () => {
+    try {
+      // Only fetch if backgroundImage exists in settings
+      if (backgroundImage) {
+        // Normalize path: replace backslashes with forward slashes
+        const normalizedPath = backgroundImage
+          .replace(/\\/g, "/")
+          .replace(/\\/g, "/");
+        const isFullUrl =
+          normalizedPath.startsWith("http://") ||
+          normalizedPath.startsWith("https://");
+        setBgImageUrl(
+          isFullUrl ? normalizedPath : `${UPLOAD_URL}${normalizedPath}`
+        );
+      } else {
+        // fallback: try to fetch from API (if needed)
+        const data = await apiService.getBackground();
+        if (data && data.backgroundImage) {
+          // Normalize path: replace backslashes with forward slashes
+          const normalizedPath = data.backgroundImage
+            .replace(/\\/g, "/")
+            .replace(/\\/g, "/");
+          const isFullUrl =
+            normalizedPath.startsWith("http://") ||
+            normalizedPath.startsWith("https://");
+          setBgImageUrl(
+            isFullUrl ? normalizedPath : `${UPLOAD_URL}${normalizedPath}`
+          );
+        } else {
+          setBgImageUrl(null);
+        }
+      }
+    } catch (e) {
+      setBgImageUrl(null);
     }
   };
 
@@ -168,10 +212,20 @@ const Quiz = () => {
 
   const currentQuestion = quizData.questions[currentQuestionIndex];
 
+  // Style for background (image or color)
+  const backgroundStyle = bgImageUrl
+    ? {
+        backgroundImage: `url('${bgImageUrl}')`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        minHeight: "100vh",
+      }
+    : { backgroundColor, minHeight: "100vh" };
+
   return (
     <div
-      className="min-h-screen flex items-center justify-center p-4"
-      style={{ backgroundColor }}
+      className="min-h-screen flex items-center justify-center px-4 py-9"
+      style={backgroundStyle}
     >
       <div className="max-w-2xl w-full">
         {/* Logo */}
@@ -180,7 +234,11 @@ const Quiz = () => {
             <img
               src={logo}
               alt="Logo"
-              className="h-16 mx-auto object-contain"
+              className="mx-auto object-contain"
+              style={{
+                width: logoWidth ? `${logoWidth}px` : undefined,
+                height: logoHeight ? `${logoHeight}px` : undefined,
+              }}
             />
           </div>
         )}

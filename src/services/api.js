@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 const UPLOAD_URL = process.env.REACT_APP_UPLOAD_URL;
@@ -8,6 +8,7 @@ export const API_ENDPOINTS = {
   GETLOGO: `${API_BASE_URL}/settings/admin/get-logo`,
   GETSETTINGS: `${API_BASE_URL}/settings/admin/get-settings`,
   GETACTIVEQUIZ: `${API_BASE_URL}/auth/quiz/get-last-active`,
+  GETBACKGROUND: `${API_BASE_URL}/settings/admin/get-background`,
 };
 
 // Helper function to extract data from API response
@@ -32,7 +33,7 @@ export const apiService = {
       const response = await axios.get(API_ENDPOINTS.GETLOGO);
       return extractDataFromResponse(response);
     } catch (error) {
-      console.error('Error fetching logo:', error);
+      console.error("Error fetching logo:", error);
       throw error;
     }
   },
@@ -43,7 +44,7 @@ export const apiService = {
       const response = await axios.get(API_ENDPOINTS.GETSETTINGS);
       return extractDataFromResponse(response);
     } catch (error) {
-      console.error('Error fetching settings:', error);
+      console.error("Error fetching settings:", error);
       throw error;
     }
   },
@@ -52,18 +53,29 @@ export const apiService = {
   getActiveQuiz: async () => {
     try {
       const response = await axios.get(API_ENDPOINTS.GETACTIVEQUIZ);
-      
+
       // Handle the new response structure
       if (response.data.success && response.data.data) {
         return response.data.data;
       } else {
-        throw new Error(response.data.message || 'Failed to get quiz data');
+        throw new Error(response.data.message || "Failed to get quiz data");
       }
     } catch (error) {
-      console.error('Error fetching active quiz:', error);
+      console.error("Error fetching active quiz:", error);
+      throw error;
+    }
+  },
+
+  // Get background image
+  getBackground: async () => {
+    try {
+      const response = await axios.get(API_ENDPOINTS.GETBACKGROUND);
+      return extractDataFromResponse(response);
+    } catch (error) {
+      console.error("Error fetching background:", error);
       throw error;
     }
   },
 };
 
-export { UPLOAD_URL }; 
+export { UPLOAD_URL };
